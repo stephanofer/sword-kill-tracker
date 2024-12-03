@@ -1,0 +1,6 @@
+name: Sword Kill Tracket
+version: 1.0.0
+main: com.stephanofer.Main
+api-version: 1.8
+author: stephanofer
+description: ¡Plugin desarrollado para Hera Network, Sistema de Seguimiento de muertes en las espadas!
