@@ -19,8 +19,13 @@ public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 
+        if (!sender.hasPermission("swordkilltracker.use")) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c¡Ups! &fEste comando no existe. &eRangos&7, &bKits&7, &6Mejoras &7y Mas &fen! &dtienda.heramc.net"));
+            return true;
+        }
+
         if (args.length != 3){
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c!Ups! &fRecuerda usar &a/swordkilltracker give <ITEM> <Jugador>"));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c!Ups! &fRecuerda usar &a/swordkilltracker give <item> <player>"));
             return true;
         }
 
