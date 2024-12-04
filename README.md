@@ -1,6 +1,6 @@
 # Sword Kill Tracker
 
-This plugin was developed to meet the client’s request for tracking the number of kills made with swords in a Minecraft server. It dynamically updates the sword's name to include the kill count, providing players with a clear and engaging way to showcase their combat achievements.
+This plugin was developed on a client's request to track the number of kills performed with any item in their Minecraft network. It dynamically updates the lore to include the kill count and the last 3 kills performed, providing players with a clear and engaging way to showcase their item-specific kills.
 
 
 
