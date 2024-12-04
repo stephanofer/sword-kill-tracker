@@ -5,3 +5,7 @@ api-version: 1.8
 author: stephanofer
 description: ¡Plugin desarrollado para Hera Network, Sistema de Seguimiento de muertes en las espadas!
 depend: [NBTAPI]
+commands:
+  swordkilltracker:
+    description: Gived Diamond Sword With Kill count Tracker
+    usage: /swordkilltracker
