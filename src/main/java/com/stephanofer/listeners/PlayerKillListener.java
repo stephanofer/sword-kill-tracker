@@ -74,8 +74,8 @@ public class PlayerKillListener implements Listener {
 
         List<String> newLore = new ArrayList<>();
         newLore.add(0,messageKillCounter);
-        newLore.add(1, "§7Latest Three Kills:");
-        newLore.add(2, " ");
+        newLore.add(1, " ");
+        newLore.add(2, "§7Latest Three Kills:");
         newLore.addAll(killDescriptionsList);
         meta.setLore(newLore);
         sword.setItemMeta(meta);
