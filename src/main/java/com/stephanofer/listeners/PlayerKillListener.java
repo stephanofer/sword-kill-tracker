@@ -23,7 +23,6 @@ public class PlayerKillListener implements Listener {
         boolean isPlayerKiller = event.getEntity().getKiller() != null && event.getEntity().getKiller() instanceof Player;
         boolean isPlayerVictim = event.getEntity() instanceof Player;
 
-
         if(!(isPlayerKiller) || !(isPlayerVictim)){
             return;
         }
@@ -70,12 +69,14 @@ public class PlayerKillListener implements Listener {
 
 
         ItemMeta meta = sword.getItemMeta();
+        String messageEnchantment = "§7Kill tracker I";
         String messageKillCounter = "§6§lKills: §f" + NBT.get(sword, nbt -> (int) nbt.getInteger("KillCount"));
 
         List<String> newLore = new ArrayList<>();
-        newLore.add(0,messageKillCounter);
-        newLore.add(1, " ");
-        newLore.add(2, "§7Latest Three Kills:");
+        newLore.add(0,messageEnchantment);
+        newLore.add(1,messageKillCounter);
+        newLore.add(2, " ");
+        newLore.add(3, "§7Latest Three Kills:");
         newLore.addAll(killDescriptionsList);
         meta.setLore(newLore);
         sword.setItemMeta(meta);

@@ -65,6 +65,12 @@ public class MainCommand implements CommandExecutor {
 
     public ItemStack createItem(Material material){
         ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        String messageEnchantment = "§7Kill tracker I";
+        List<String> newLore = new ArrayList<>();
+        newLore.add(0,messageEnchantment);
+        meta.setLore(newLore);
+        item.setItemMeta(meta);
 
         NBT.modify(item, nbt -> {
             nbt.setInteger("KillCount", 0);
