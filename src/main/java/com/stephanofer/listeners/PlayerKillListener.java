@@ -2,85 +2,91 @@ package com.stephanofer.listeners;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.iface.ReadWriteNBTList;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
+import think.rpgitems.api.RPGItems;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PlayerKillListener implements Listener {
 
     @EventHandler
-    public void onPlayerKill(EntityDeathEvent event){
-        boolean isPlayerKiller = event.getEntity().getKiller() != null && event.getEntity().getKiller() instanceof Player;
-        boolean isPlayerVictim = event.getEntity() instanceof Player;
-
-        if(!(isPlayerKiller) || !(isPlayerVictim)){
+    public void onPlayerKill(EntityDeathEvent event) {
+        if (event.getEntity().getKiller() == null || !(event.getEntity() instanceof Player)) {
             return;
         }
 
         Player killer = event.getEntity().getKiller();
         Player victim = (Player) event.getEntity();
         ItemStack weapon = killer.getItemInHand();
-        boolean isWeaponValid = NBT.get(weapon, nbt -> (boolean) nbt.hasTag("KillCount"));
 
-        if (!isWeaponValid){
+        if (weapon == null || weapon.getType() == Material.AIR) {
             return;
         }
 
-        ItemStack trackedSword = updateSwordKillTracker(weapon, victim, killer);
+        if (RPGItems.toRPGItem(weapon) != null) {
+            return;
+        }
 
-        killer.setItemInHand(trackedSword);
+        if (!isKillTrackerWeapon(weapon.getType())) {
+            return;
+        }
+
+        updateWeaponKillTracker(weapon, victim, killer);
     }
 
-    private ItemStack updateSwordKillTracker(ItemStack sword, Player victim, Player killer) {
+    /**
+     * Verifica si el tipo de material es una espada, hacha o arco
+     */
+    private boolean isKillTrackerWeapon(Material type) {
+        String name = type.name();
+        return name.endsWith("_SWORD") || name.endsWith("_AXE") || type == Material.BOW;
+    }
 
-        NBT.modify(sword, nbt -> {
-            int killCount = (int) nbt.getInteger("KillCount");
-            killCount++;
-            nbt.setInteger("KillCount", killCount);
+    private void updateWeaponKillTracker(ItemStack weapon, Player victim, Player killer) {
+        NBT.modify(weapon, nbt -> {
+            // Si no tiene KillCount, es la primera kill - inicializar
+            int currentKills = nbt.hasTag("KillCount") ? nbt.getInteger("KillCount") : 0;
+            int newKillCount = currentKills + 1;
+            
+            nbt.setInteger("KillCount", newKillCount);
             nbt.setString("LastPlayerKilled", victim.getName());
+
             ReadWriteNBTList<String> killDescriptions = nbt.getStringList("KillDescriptions");
             String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM"));
-            String newKillDescription = "§8["+ date + "] §f"+ victim.getName() + " §ewas slain by §f" + killer.getName() + "§e.";
+            String newKillDescription = "§8[" + date + "] §f" + victim.getName() + " §ewas slain by §f" + killer.getName() + "§e.";
+
+            // Mantener solo las últimas 3 kills
             if (killDescriptions.size() >= 3) {
-                killDescriptions.remove(0);
+                killDescriptions.remove(killDescriptions.size() - 1);
             }
             killDescriptions.add(0, newKillDescription);
+
+            // Actualizar el lore del item
+            nbt.modifyMeta((readOnlyNbt, meta) -> {
+                List<String> killDescriptionsList = new ArrayList<>();
+                for (String s : readOnlyNbt.getStringList("KillDescriptions")) {
+                    killDescriptionsList.add(s);
+                }
+
+                String messageKillCounter = "§6§lKills: §f" + newKillCount;
+
+                List<String> newLore = new ArrayList<>();
+                newLore.add(messageKillCounter);
+                newLore.add(" ");
+                newLore.add("§7Latest Three Kills:");
+                newLore.addAll(killDescriptionsList);
+                meta.setLore(newLore);
+            });
         });
-
-        List<String> killDescriptionsList = NBT.get(sword, nbt -> {
-            ReadWriteNBTList<String> nbtList = (ReadWriteNBTList<String>) nbt.getStringList("KillDescriptions");
-            List<String> list = new ArrayList<>();
-            for (String s : nbtList) {
-                list.add(s);
-            }
-            Collections.reverse(list);
-            return list;
-        });
-
-
-        ItemMeta meta = sword.getItemMeta();
-        String messageEnchantment = "§7Kill tracker I";
-        String messageKillCounter = "§6§lKills: §f" + NBT.get(sword, nbt -> (int) nbt.getInteger("KillCount"));
-
-        List<String> newLore = new ArrayList<>();
-        newLore.add(0,messageEnchantment);
-        newLore.add(1,messageKillCounter);
-        newLore.add(2, " ");
-        newLore.add(3, "§7Latest Three Kills:");
-        newLore.addAll(killDescriptionsList);
-        meta.setLore(newLore);
-        sword.setItemMeta(meta);
-        return sword;
     }
 
 }

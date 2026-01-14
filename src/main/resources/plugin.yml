@@ -1,11 +1,17 @@
 name: SwordKillTracker
-version: 1.0.0
+version: 1.1.0
 main: com.stephanofer.Main
 api-version: 1.8
 author: stephanofer
 description: ¡Plugin desarrollado para Hera Network, Sistema de Seguimiento de muertes en las espadas!
-depend: [NBTAPI]
+depend: [ RPGItems, NBTAPI ]
 commands:
   swordkilltracker:
     description: Gived Diamond Sword With Kill count Tracker
     usage: /swordkilltracker
+  debugitem:
+    description: Muestra información NBT del item en tu mano
+    usage: /debugitem
+  addnbt:
+    description: Agrega NBT custom al item en tu mano
+    usage: /addnbt <key> <value> [type]
