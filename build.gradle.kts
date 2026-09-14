@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.stephanofer"
-version = "1.1.0"
+version = "2.0.0"
 repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
@@ -22,6 +22,10 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.jar {
+    destinationDirectory.set(layout.projectDirectory.dir("target"))
 }
 
 
