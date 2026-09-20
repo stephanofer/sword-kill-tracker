@@ -3,20 +3,17 @@ plugins {
 }
 
 group = "com.stephanofer"
-version = "2.0.0"
+version = "3.0.0"
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
-
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    maven(url = "https://repo.hpfxd.com/releases/")
     maven("https://repo.codemc.io/repository/maven-public/")
-
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly("com.hpfxd.pandaspigot:pandaspigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1")
-    compileOnly(files("libs/RPGItems-reloaded.jar"))
+    compileOnly(files("libs/RPGItems-reloaded-5.1.2.jar"))
 }
 
 java {
